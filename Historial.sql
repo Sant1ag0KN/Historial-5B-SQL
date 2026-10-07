@@ -1,3 +1,5 @@
+-- ============================== Clase 1 ==============================
+
 CREATE DATABASE ejemplo1srn; --! Creación de la base de datos
 
 USE ejemplo1srn; -- Selección de la base de datos
@@ -36,6 +38,8 @@ CREATE TABLE productos(
     fechaalta DATE
 );
 
+-- ============================== Clase 2 ==============================
+
 INSERT INTO productos VALUES("a01","Afilador",2.50,"2007-11-02");
 INSERT INTO productos VALUES("s01","Silla mod.ZAZ",20,"2007-11-03");
 INSERT INTO productos VALUES("s02","Silla mod.XAX",25,"2007-11-03");
@@ -54,3 +58,49 @@ SELECT nombre, direccion FROM personas WHERE edad = 30;
 
 --! Selección de los datos de la 1ra base de datos con condición LIKE
 SELECT nombre, direccion FROM personas WHERE direccion LIKE "%Madero%";
+
+-- ============================== Clase 3 ==============================
+
+-- Comenzaremos creando una nueva base de datos, de forma similar al ejemplo anterior
+DROP DATABASE IF EXISTS ejercicio3srn;
+CREATE DATABASE ejercicio3srn;
+
+USE ejercicio3srn;
+
+CREATE TABLE ciudades(
+    codigo varchar(3),
+    nombre varchar(30),
+    PRIMARY KEY(codigo) --! Creación de la llave primaria de la tabla
+);
+
+/* Mientras que la tabla de personas sería casi igual al ejemplo anterior, pero añadiendo
+un nuevo dato: el código de la cuidad */
+CREATE TABLE personas(
+    nombre varchar(20),
+    direccion varchar(40),
+    edad int(3),
+    codciudad varchar(3),
+    FOREIGN KEY (codciudad) REFERENCES ciudades(codigo)
+);
+
+INSERT INTO ciudades VALUES("a", "Aguaascalientes");
+INSERT INTO ciudades VALUES("b", "Baja California");
+INSERT INTO ciudades VALUES("c", "Colima");
+INSERT INTO ciudades VALUES("d", "Jalisco");
+
+INSERT INTO personas VALUES("Juan", "Benito Juárez", 25, "a");
+INSERT INTO personas VALUES("Pedro", "Constitución", 23, "c");
+INSERT INTO personas VALUES("Alberto", "Guerrero", 22, "b");
+INSERT INTO personas VALUES("Juan", "Guerrero", 28, "b");
+
+--! Busqueda de datos en ambas tablas; muestra en nombre, direccion y nombre de la cuidad
+SELECT personas.nombre, direccion, ciudades.nombre FROM personas, ciudades
+WHERE personas.codciudad = ciudades.codigo;
+
+--! Busqueda de datos en ambas tablas; muestra en nombre, direccion y nombre de la cuidad
+SELECT personas.nombre, direccion, edad FROM personas, ciudades
+WHERE ciudades.nombre = "Colima" AND personas.codciudad = ciudades.codigo;
+
+-- Y para saber las personas de ciudades que comienzen con la letra "b", haríamos:
+SELECT personas.nombre, direccion, ciudades.nombre FROM personas, ciudades WHERE ciudades.nombre LIKE "b%"
+AND personas.codciudad = ciudades.codigo;
